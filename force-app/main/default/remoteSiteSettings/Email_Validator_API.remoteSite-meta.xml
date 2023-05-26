@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RemoteSiteSetting xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Easily check if a certain e-mail address is valid. Is it a valid domain? Is the e-mail a temporary/disposable e-mail? That’s a common indicator of spamming/trolling, so now there’s an API for you so you can easily block it!</description>
+    <disableProtocolSecurity>false</disableProtocolSecurity>
+    <isActive>true</isActive>
+    <url>https://mailcheck.p.rapidapi.com</url>
+</RemoteSiteSetting>
