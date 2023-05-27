@@ -20,16 +20,37 @@ public with sharing class Ws_EmailValidatorIntegration {
         try {
             HttpResponse response = http.send(request);
             Map<String, Object> result;
+            EmailResponse emailResponse;
     
             if(response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
                 result = (Map<String, Object>)JSON.deserializeUntyped(response.getBody());
+                emailResponse = new EmailResponse(result);
             }
 
             System.debug('result => ' + result);
+            System.debug('emailResponse => ' + emailResponse);
 
         } catch (Exception e) {
             //return some exception and store in a Apex Logs table.
         }
         
     }
+
+    public class EmailResponse {
+        public Boolean IsValid       {get; set;}
+        public Boolean IsBlocked     {get; set;}
+        public Boolean IsDisposable  {get; set;}
+        public String  Domain        {get; set;}
+
+        public EmailResponse(){}
+
+        public EmailResponse(Map<String, Object> emailResult) {
+            this.IsValid        = (Boolean) emailResult.get('valid');
+            this.IsBlocked      = (Boolean) emailResult.get('block');
+            this.IsDisposable   = (Boolean) emailResult.get('disposable');
+            this.Domain         = (String)  emailResult.get('domain');
+        }
+    }
+
+    
 }
