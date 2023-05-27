@@ -8,7 +8,7 @@ public with sharing class Ws_EmailValidatorIntegration {
         this.emailValidatorSetting = Email_Validator_Settings__c.getInstance(CUSTOM_SETTING_GET_EMAIL_VALIDATOR);
     }
 
-    public void validateEmail(String emailToValidate) {
+    public ActionResponse.Response validateEmail(String emailToValidate) {
 
         Http http = new Http();
         HttpRequest request = new HttpRequest();
@@ -20,18 +20,21 @@ public with sharing class Ws_EmailValidatorIntegration {
         try {
             HttpResponse response = http.send(request);
             Map<String, Object> result;
-            EmailResponse emailResponse;
     
             if(response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
                 result = (Map<String, Object>)JSON.deserializeUntyped(response.getBody());
-                emailResponse = new EmailResponse(result);
+
+                System.debug('result => ' + result);
+
+                return new ActionResponse.Response(
+                    false, '', JSON.serialize(new EmailResponse(result))
+                );
+            } else {
+                return new ActionResponse.Response(response.getBody());
             }
 
-            System.debug('result => ' + result);
-            System.debug('emailResponse => ' + emailResponse);
-
         } catch (Exception e) {
-            //return some exception and store in a Apex Logs table.
+            return new ActionResponse.Response(e);
         }
         
     }
@@ -52,5 +55,5 @@ public with sharing class Ws_EmailValidatorIntegration {
         }
     }
 
-    
+
 }
