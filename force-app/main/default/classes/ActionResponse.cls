@@ -3,9 +3,9 @@ public with sharing class ActionResponse {
 
     public class Response {
 
-        public Boolean HasError     {get; set;}
-        public String Message       {get; set;}
-        public String ResponseJSON  {get; set;}
+        @AuraEnabled public Boolean HasError     {get; set;}
+        @AuraEnabled public String Message       {get; set;}
+        @AuraEnabled public String ResponseJSON  {get; set;}
 
         public Response() {}
 

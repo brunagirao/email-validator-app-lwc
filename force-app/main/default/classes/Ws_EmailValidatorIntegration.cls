@@ -1,21 +1,20 @@
 public with sharing class Ws_EmailValidatorIntegration {
 
-    private final String CUSTOM_SETTING_GET_EMAIL_VALIDATOR = 'GetEmailCheck';
+    private static final String CUSTOM_SETTING_GET_EMAIL_VALIDATOR = 'GetEmailCheck';
     
-    public Email_Validator_Settings__c emailValidatorSetting;
-    
-    public Ws_EmailValidatorIntegration() {
-        this.emailValidatorSetting = Email_Validator_Settings__c.getInstance(CUSTOM_SETTING_GET_EMAIL_VALIDATOR);
-    }
+    public Ws_EmailValidatorIntegration() {}
 
-    public ActionResponse.Response validateEmail(String emailToValidate) {
+    @AuraEnabled
+    public static ActionResponse.Response validateEmail(String emailToValidate) {
+        System.debug('APEX emailToValidate => ' + emailToValidate);
+        Email_Validator_Settings__c emailValidatorSetting = Email_Validator_Settings__c.getInstance(CUSTOM_SETTING_GET_EMAIL_VALIDATOR);
 
         Http http = new Http();
         HttpRequest request = new HttpRequest();
-        request.setEndpoint('callout:EmailValidatorCredential' + this.emailValidatorSetting.Endpoint__c + emailToValidate);
-        request.setMethod(this.emailValidatorSetting.Method__c);
-        request.setHeader('X-RapidAPI-Key',  this.emailValidatorSetting.ApiKey__c);
-        request.setHeader('X-RapidAPI-Host', this.emailValidatorSetting.ApiHost__c);
+        request.setEndpoint('callout:EmailValidatorCredential' + emailValidatorSetting.Endpoint__c + emailToValidate);
+        request.setMethod(emailValidatorSetting.Method__c);
+        request.setHeader('X-RapidAPI-Key',  emailValidatorSetting.ApiKey__c);
+        request.setHeader('X-RapidAPI-Host', emailValidatorSetting.ApiHost__c);
 
         try {
             HttpResponse response = http.send(request);
@@ -24,7 +23,7 @@ public with sharing class Ws_EmailValidatorIntegration {
             if(response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
                 result = (Map<String, Object>)JSON.deserializeUntyped(response.getBody());
 
-                System.debug('result => ' + result);
+                System.debug('result => ' + JSON.serialize(new EmailResponse(result)));
 
                 return new ActionResponse.Response(
                     false, '', JSON.serialize(new EmailResponse(result))
@@ -35,15 +34,14 @@ public with sharing class Ws_EmailValidatorIntegration {
 
         } catch (Exception e) {
             return new ActionResponse.Response(e);
-        }
-        
+        }  
     }
 
     public class EmailResponse {
-        public Boolean IsValid       {get; set;}
-        public Boolean IsBlocked     {get; set;}
-        public Boolean IsDisposable  {get; set;}
-        public String  Domain        {get; set;}
+        @AuraEnabled public Boolean IsValid       {get; set;}
+        @AuraEnabled public Boolean IsBlocked     {get; set;}
+        @AuraEnabled public Boolean IsDisposable  {get; set;}
+        @AuraEnabled public String  Domain        {get; set;}
 
         public EmailResponse(){}
 
