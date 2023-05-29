@@ -5,6 +5,13 @@ import validateEmail                from '@salesforce/apex/Ws_EmailValidatorInte
 export default class EmailValidator extends LightningElement {
 
     @track emailToValidate;
+    @track emailData = {
+        email           : 'test_email@email.com',
+        isValid         : false,
+        isBlocked       : false,
+        isDisposable    : false,
+        Domain          : 'No content'
+    }
 
 
     //HANDLES
@@ -25,17 +32,21 @@ export default class EmailValidator extends LightningElement {
         let response = await validateEmail ({
             emailToValidate : this.emailToValidate
         });
-    
+
         let emailResponse = JSON.parse(response.ResponseJSON);
 
         if (response.HasError || emailResponse.length < 1) {
             console.log('Error');
         } else {
-            console.log('Success', response.ResponseJSON);
+            this.emailData.email         = this.emailToValidate === '' ||  this.emailToValidate === null || this.emailToValidate === undefined ? this.emailData.email : this.emailToValidate;
+            this.emailData.isValid       = emailResponse.IsValid;
+            this.emailData.isBlocked     = emailResponse.IsBlocked;
+            this.emailData.isDisposable  = emailResponse.IsDisposable;
+            this.emailData.Domain        = emailResponse.Domain;
         }
 
     }
-
+    
 
     isAValidEmail(email) {
         console.log('email => ', email);

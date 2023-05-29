@@ -1,10 +1,64 @@
 <template>
     <lightning-card title="Email Validator" icon-name="standard:email_chatter">
-        <!-- Default/basic -->
-        <div class="slds-p-around_medium lgc-bg">
-            <lightning-input type="email" label="Email address" placeholder="type here..." value={emailToValidate} onchange={handleEmailChange}></lightning-input>
-            <lightning-button variant="brand" label="Validate" title="Validate" onclick={handleValidateEmail} class="slds-m-left_x-small"></lightning-button>
-            <lightning-button variant="neutral" label="Clear" title="Clear" onclick={handleClear} class="slds-m-left_x-small"></lightning-button>
+
+        <!-- HEADER -->
+        <lightning-layout multiple-rows>
+            <lightning-layout-item size="6">
+                <lightning-input type="email" placeholder="type the email here..." value={emailToValidate} onchange={handleEmailChange}></lightning-input>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="6">
+                <lightning-button variant="brand" label="Validate" title="Validate" onclick={handleValidateEmail}></lightning-button>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <div class="slds-m-top_medium slds-m-bottom_x-large">
+            <!-- Simple -->
+            <div class="slds-p-around_medium lgc-bg">
+                <ul class="slds-has-dividers_bottom-space">
+                    <li class="slds-item">
+                        <lightning-tile label="Historic Email Search">
+                            <p class="slds-truncate" title="7 Members">7 Members</p>
+                        </lightning-tile>
+                    </li>
+                    <li class="slds-item">
+                        <lightning-icon slot="media" icon-name="standard:email"></lightning-icon>
+                        <lightning-tile label={emailData.eAmail} href="/path/to/somewhere">
+                            <dl class="slds-dl_horizontal">
+                                <dt class="slds-dl_horizontal__label">
+                                    <p class="slds-truncate" title="">Is Valid:</p>
+                                </dt>
+                                <dd class="slds-dl_horizontal__detail slds-tile__meta">
+                                    <lightning-input class="slds-p-right_xx-large" type="checkbox" checked={emailData.isValid} disabled>
+                                    </lightning-input>
+                                </dd>
+                                <dt class="slds-dl_horizontal__label">
+                                    <p class="slds-truncate" title="">Is Blocked:</p>
+                                </dt>
+                                <dd class="slds-dl_horizontal__detail slds-tile__meta">
+                                    <lightning-input class="slds-p-right_xx-large" type="checkbox" checked={emailData.isBlocked} disabled>
+                                    </lightning-input>
+                                </dd>
+                                <dt class="slds-dl_horizontal__label">
+                                    <p class="slds-truncate" title="">Is Disposable:</p>
+                                </dt>
+                                <dd class="slds-dl_horizontal__detail slds-tile__meta">
+                                    <lightning-input class="slds-p-right_xx-large" type="checkbox" checked={emailData.isDisposable} disabled>
+                                    </lightning-input>
+                                </dd>
+                                <dt class="slds-dl_horizontal__label">
+                                    <p class="slds-truncate" title="">Domain:</p>
+                                </dt>
+                                <dd class="slds-dl_horizontal__detail slds-tile__meta">
+                                    <p class="slds-truncate" title="salesforce-ux@salesforce.com">{emailData.Domain}</p>
+                                </dd>
+                            </dl>
+                        </lightning-tile>
+                    </li>
+                </ul>
+            </div>
         </div>
+
     </lightning-card>
+    
 </template>
